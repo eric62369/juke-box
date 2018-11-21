@@ -1,0 +1,9 @@
+TestFile
+assdf
+asdf
+/ asdf//
+// asdfa //
+//asdf//
+C://
+a
+defaults
