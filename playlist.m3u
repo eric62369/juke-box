@@ -1,0 +1,5 @@
+#EXTM3U
+#EXTINF:105, Example artist - Example title
+C:\Files\My Music\Example.mp3
+#EXTINF:321, Example Artist2 - Example title2
+C:\Files\My Music\Favorites\Example2.ogg
