@@ -1,9 +1,9 @@
-import tkinter as tk
+from tkinter import Tk
 from application import App
 
 if __name__ == "__main__":
     # create the application
-    root = tk.Tk()
+    root = Tk()
     root.title("qtMoJo")
     root.minsize(200, 100)
 
