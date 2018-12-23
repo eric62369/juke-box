@@ -19,14 +19,13 @@ class App(Frame):
         self.musicPlayer = mp.MusicPlayer()
         # self.musicPlayer.readMusicFile("defaults")
 
+        # set up UI frames
         self.playBackFrame = Frame(self, bg=ui.fgLight)
-        self.playBackFrame.pack(side=TOP, fill=X)
-
+        self.playBackFrame.pack(side=TOP, fill=X, ipady=ui.padSmall)
         self.playListsFrame = Frame(self, bg=ui.bgLight)
         self.playListsFrame.pack(side=LEFT, fill=Y)
-
-        self.songsFrame = Frame(self, bg=ui.bgDark)
-        self.songsFrame.pack(expand=True, fill=BOTH)
+        self.songFrame = Frame(self, bg=ui.bgDark)
+        self.songFrame.pack(expand=True, fill=BOTH)
 
         self.image = PhotoImage(file="./img/jukebox.png")
         self.testButton = Button(self.playListsFrame, text="Test",
@@ -36,20 +35,28 @@ class App(Frame):
 
         # playBackFrame UI
         self.rewindButton = Button(self.playBackFrame, text="<<")
-        self.rewindButton.pack(side=LEFT)
+        self.rewindButton.pack(side=LEFT, padx=(ui.padSmall, ui.padNone))
         self.playButton = Button(self.playBackFrame, text=">")
         self.playButton.pack(side=LEFT)
         self.fastForwardButton = Button(self.playBackFrame, text=">>")
         self.fastForwardButton.pack(side=LEFT)
-        self.songScaleValue = DoubleVar()
-        self.songScale = Scale(self.playBackFrame, variable=self.songScaleValue)
-        self.songScale.pack()
 
-        self.songLabel = Label(self.songsFrame, text="ImaSong")
-        self.songLabel.pack()
+        self.songScaleValue = self.musicPlayer.getVolumeVar()
+        self.songScale = Scale(self.playBackFrame, orient=HORIZONTAL,
+                variable=self.songScaleValue)
+        self.songScale.pack(side=LEFT, padx=(ui.padSmall, ui.padNone))
+
+        # songFrame UI
+        self.songListBox = Listbox(self.songFrame, selectmode=SINGLE)
+        for song in self.musicPlayer.songList:
+            self.songListBox.insert(END, song)
+        self.songListBox.pack(expand=True, fill=BOTH)
 
     def helloCallBack(self):
-        self.songLabel["text"] = self.getSongScaleValue()
+        self.songListBox.delete(1)
+        self.songListBox.insert(1, self.getSongScaleValue())
+        print(self.songListBox.get(0))
+        print(self.songListBox.get(1))
 
     def getSongScaleValue(self):
         return self.songScaleValue.get()

@@ -1,0 +1,10 @@
+juke-box:
+
+Playlist:
+Constructs a reference to a new or existing playlist.
+def __init__():
+-For existing playlists take in a file path and then reconstruct the m3u file into a playlist object
+-For new playlists take in a name and get ready for playlist operations.
+def add(filepath):
+-Takes in a filepath and then adds the song selected. maybe an overload taking in a list of songs
+  rather than a recursive directory or single file, and just a subset of a directory.
