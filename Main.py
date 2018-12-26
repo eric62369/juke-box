@@ -7,7 +7,7 @@ if __name__ == "__main__":
     # create the application
     root = Tk()
     root.title("qtMoJo")
-    root.minsize(200, 100)
+    root.minsize(400, 300)
     # show an "Open" dialog box and return the path to the selected file
     playlist_path = "Jukebox Material"
     playlist_path = filedialog.askdirectory()

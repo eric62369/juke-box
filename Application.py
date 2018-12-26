@@ -1,22 +1,26 @@
 from tkinter import *
 from tkinter import filedialog
 import MusicPlayer as mp
+from MakePlaylist import Playlist
 from UIConstants import UIConstants as ui
 
 # https://docs.python.org/3/library/tkinter.html#how-to-use-this-section
 class App(Frame):
     '''
-    The app class handles the front end interface with the user and also calls to backend music
-    handling.
+        The app class handles the front end interface with the user and also calls to backend music
+        handling.
     '''
     def __init__(self, source, master=None):
         '''
-        A constructor that takes in a Tk() master object (optional, defaults to None)
-        Initializes the UI for the Tk window object.
+            A constructor that takes in a Tk() master object (optional, defaults to None)
+            Initializes the UI for the Tk window object.
+            pre: Takes in a String source non-default argument. It is assumed to be a legal
+                file directory, where a music library is stored on a device (i.e. mp3 player)
         '''
         super().__init__(master)
         self.pack(expand=True, fill=BOTH)
 
+        self.source_directory = source
         self.musicPlayer = mp.MusicPlayer()
         # self.musicPlayer.readMusicFile("defaults")
 
@@ -25,7 +29,7 @@ class App(Frame):
         self.playBackFrame.pack(side=TOP, fill=X, ipady=ui.padSmall)
         self.playListsFrame = Frame(self, bg=ui.bgLight)
         self.playListsFrame.pack(side=LEFT, fill=Y)
-        self.songFrame = Frame(self, bg=ui.bgDark)
+        self.songFrame = MainView(self, source=self.source_directory, bg=ui.bgDark)
         self.songFrame.pack(expand=True, fill=BOTH)
 
         # playBackFrame UI
@@ -42,8 +46,8 @@ class App(Frame):
         self.songScale.pack(side=LEFT, padx=(ui.padSmall, ui.padNone))
 
         # songFrame UI
-        self.songListBox = Listbox(self.songFrame, selectmode=SINGLE)
-        self.songListBox.pack(expand=True, fill=BOTH)
+        # self.songListBox = Listbox(self.songFrame, selectmode=SINGLE)
+        # self.songListBox.pack(expand=True, fill=BOTH)
 
     def helloCallBack(self):
         pass
@@ -58,3 +62,63 @@ class App(Frame):
     def get_songs(self, source_directory):
         if source_directory is None:
             raise TypeError("Cannot give NoneType source_directory")
+
+class Page(Frame):
+    def __init__(self, *args, **kwargs):
+        Frame.__init__(self, *args, **kwargs)
+    def show(self):
+        self.lift()
+
+class PlaylistPage(Page):
+    def __init__(self, *args, **kwargs):
+        self.source = None
+        if "source" in kwargs:
+            self.source = kwargs["source"]
+            kwargs.pop("source")
+        Page.__init__(self, *args, **kwargs)
+        self.playlists = read_in_playlists
+        self.instructions = Label(self, text="Create a new Playlist")
+        self.instructions.pack(anchor=NW)
+        self.name_input = Entry(self)
+        self.name_input.pack(anchor=NW)
+        self.create_button = Button(self,
+                text="Create Playlist",
+                command=lambda: self.create_playlist(self.name_input.get(), self.source))
+        self.create_button.pack(anchor=NW)
+
+    def create_playlist(self, name, source_directory):
+        print(name, source_directory)
+
+    def read_in_playlists(self):
+        pass
+
+class Page2(Page):
+    def __init__(self, *args, **kwargs):
+        Page.__init__(self, *args, **kwargs)
+        label = Label(self, text="This is page 2")
+        label.pack(side=TOP, fill=BOTH, expand=True)
+
+class MainView(Frame):
+    def __init__(self, *args, **kwargs):
+        self.source = None
+        if "source" in kwargs:
+            self.source = kwargs["source"]
+            kwargs.pop("source")
+        Frame.__init__(self, *args, **kwargs)
+        p1 = PlaylistPage(self, source=self.source)
+        p2 = Page2(self)
+        buttonframe = Frame(self)
+        container = Frame(self)
+        buttonframe.pack(side="top", fill="x", expand=False)
+        container.pack(side="top", fill="both", expand=True)
+
+        p1.place(in_=container, x=0, y=0, relwidth=1, relheight=1)
+        p2.place(in_=container, x=0, y=0, relwidth=1, relheight=1)
+
+        b1 = Button(buttonframe, text="Page 1", command=p1.lift)
+        b2 = Button(buttonframe, text="Page 2", command=p2.lift)
+
+        b1.pack(side="left")
+        b2.pack(side="left")
+
+        p1.show()
