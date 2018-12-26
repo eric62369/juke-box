@@ -1,6 +1,7 @@
 from tkinter import *
-import musicplayer as mp
-from uiconstants import UIConstants as ui
+from tkinter import filedialog
+import MusicPlayer as mp
+from UIConstants import UIConstants as ui
 
 # https://docs.python.org/3/library/tkinter.html#how-to-use-this-section
 class App(Frame):
@@ -8,7 +9,7 @@ class App(Frame):
     The app class handles the front end interface with the user and also calls to backend music
     handling.
     '''
-    def __init__(self, master=None):
+    def __init__(self, source, master=None):
         '''
         A constructor that takes in a Tk() master object (optional, defaults to None)
         Initializes the UI for the Tk window object.
@@ -27,12 +28,6 @@ class App(Frame):
         self.songFrame = Frame(self, bg=ui.bgDark)
         self.songFrame.pack(expand=True, fill=BOTH)
 
-        self.image = PhotoImage(file="./img/jukebox.png")
-        self.testButton = Button(self.playListsFrame, text="Test",
-                command=self.helloCallBack)
-        self.testButton.config(image=self.image, width=100, height=100)
-        self.testButton.pack(side=LEFT)
-
         # playBackFrame UI
         self.rewindButton = Button(self.playBackFrame, text="<<")
         self.rewindButton.pack(side=LEFT, padx=(ui.padSmall, ui.padNone))
@@ -48,15 +43,18 @@ class App(Frame):
 
         # songFrame UI
         self.songListBox = Listbox(self.songFrame, selectmode=SINGLE)
-        for song in self.musicPlayer.songList:
-            self.songListBox.insert(END, song)
         self.songListBox.pack(expand=True, fill=BOTH)
 
     def helloCallBack(self):
-        self.songListBox.delete(1)
-        self.songListBox.insert(1, self.getSongScaleValue())
-        print(self.songListBox.get(0))
-        print(self.songListBox.get(1))
+        pass
+        # self.songListBox.delete(1)
+        # self.songListBox.insert(1, self.getSongScaleValue())
+        # print(self.songListBox.get(0))
+        # print(self.songListBox.get(1))
 
     def getSongScaleValue(self):
         return self.songScaleValue.get()
+
+    def get_songs(self, source_directory):
+        if source_directory is None:
+            raise TypeError("Cannot give NoneType source_directory")

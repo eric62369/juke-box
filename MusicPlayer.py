@@ -1,15 +1,19 @@
 from tkinter import *
-from pygame import mixer as mixer
+import os
+# from pygame import mixer as mixer
 
 class MusicPlayer():
-    def __init__(self, filePath="defaultLibrary.txt"):
+    def __init__(self, filepath="defaultLibrary.txt"):
         '''
-        Takes in a String filePath representing an absolute file path
+        Takes in a String filepath representing an absolute file path
         to a file containing paths to all music in the user's library
         '''
-        with open(filePath, 'r') as library:
-            self.songList = library.read().splitlines()
-            self.songSet = set(self.songList)
+        self.songList = []
+        self.songSet = set(self.songList)
+        if os.path.exists(filepath):
+            with open(filepath, 'r') as library:
+                self.songList = library.read().splitlines()
+                self.songSet = set(self.songList)
 
         self.volume = DoubleVar()
         self.isPlaying = False
@@ -20,12 +24,12 @@ class MusicPlayer():
         # while mixer.music.get_busy() == True:
         #     continue
 
-    def readMusicFile(self, filePath):
+    def readMusicFile(self, filepath):
         '''
-        Takes in a String filePath representing the absolute file path
+        Takes in a String filepath representing the absolute file path
         to a music file
         '''
-        if filePath in self.songSet:
+        if filepath in self.songSet:
             # TODO: Read the music file
             pass
 
@@ -37,5 +41,3 @@ class MusicPlayer():
 
     def switchIsPlaying(self):
         self.isPlaying = not self.isPlaying
-
-import pygame
