@@ -1,5 +1,6 @@
 from tkinter import *
 from tkinter import filedialog
+import os
 import MusicPlayer as mp
 from MakePlaylist import Playlist
 from UIConstants import UIConstants as ui
@@ -76,26 +77,46 @@ class PlaylistPage(Page):
             self.source = kwargs["source"]
             kwargs.pop("source")
         Page.__init__(self, *args, **kwargs)
-        self.playlists = read_in_playlists
+        self.playlists = None
+        self.playlists = self.read_in_playlists()
         self.instructions = Label(self, text="Create a new Playlist")
         self.instructions.pack(anchor=NW)
         self.name_input = Entry(self)
         self.name_input.pack(anchor=NW)
         self.create_button = Button(self,
                 text="Create Playlist",
-                command=lambda: self.create_playlist(self.name_input.get(), self.source))
+                command=lambda: self.create_playlist(name=self.name_input.get(),
+                        source_directory=self.source))
         self.create_button.pack(anchor=NW)
+        self.notification_label = Label(self, text="")
+        self.notification_label.pack(anchor=NW)
+
+    def playlist_created_notification(self, name):
+        self.notification_label.config(text="Created playlist: " + name)
 
     def create_playlist(self, name, source_directory):
-        print(name, source_directory)
+        if name == "":
+            name = None
+        playlist = Playlist(filepath=source_directory, name=name)
+        playlist.add(filepath="Jukebox Material")
+        playlist.save()
+        self.playlists.append(playlist)
+        self.playlist_created_notification(name + ".m3u")
 
     def read_in_playlists(self):
-        pass
+        directory_contents = []
+        if os.path.exists(Playlist.playlist_directory):
+            directory_contents = os.listdir(Playlist.playlist_directory)
+        playlists = []
+        for file in directory_contents:
+            if Playlist.isFilePlaylist(file):
+                playlists.append(file)
+        return playlists
 
-class Page2(Page):
+class AddSongPage(Page):
     def __init__(self, *args, **kwargs):
         Page.__init__(self, *args, **kwargs)
-        label = Label(self, text="This is page 2")
+        label = Label(self, text="Add songs to playlists")
         label.pack(side=TOP, fill=BOTH, expand=True)
 
 class MainView(Frame):
@@ -106,7 +127,7 @@ class MainView(Frame):
             kwargs.pop("source")
         Frame.__init__(self, *args, **kwargs)
         p1 = PlaylistPage(self, source=self.source)
-        p2 = Page2(self)
+        p2 = AddSongPage(self)
         buttonframe = Frame(self)
         container = Frame(self)
         buttonframe.pack(side="top", fill="x", expand=False)
